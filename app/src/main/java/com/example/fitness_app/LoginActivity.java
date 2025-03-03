@@ -62,10 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // Check if user is already signed in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
-            updateUI(currentUser);
-        }
+
     }
 
     private void updateUI(FirebaseUser user) {

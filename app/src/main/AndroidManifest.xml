@@ -22,7 +22,7 @@
         android:theme="@style/Theme.Fitnessapp"
         tools:targetApi="31">
         <activity
-            android:name=".RegisterActivity"
+            android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".RegisterActivity"
             android:exported="false"/>
         <activity
             android:name=".MainActivity"
