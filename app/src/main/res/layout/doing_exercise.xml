@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewExerciseName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+
+    <TextView
+        android:id="@+id/textViewMinPulse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textViewSteps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Шаги: 0"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textViewHeartRate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Пульс: 0"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/textViewCalories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Калории: 0"
+        android:textSize="18sp" />
+</LinearLayout>

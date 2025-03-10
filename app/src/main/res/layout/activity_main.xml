@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:gravity="center_horizontal"
+    >
 
-    <TextView
-        android:id="@+id/textViewSteps"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Шаги: 0"
-        android:textSize="18sp" />
+        android:orientation="vertical"
 
-    <TextView
-        android:id="@+id/textViewHeartRate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Пульс: 0"
-        android:textSize="18sp" />
+        tools:ignore="MissingConstraints">
+        <Button
+            android:id="@+id/add_exercise"
+            android:text="Добавить упражнение"
+            android:layout_width="500px"
+            android:layout_height="150px"
+            android:layout_marginStart="100dp">
+        </Button>
+        <Button
+            android:id="@+id/start_train"
+            android:text="Начать тренировку"
+            android:layout_width="500px"
+            android:layout_height="150px"
+            android:layout_marginStart="100dp">
+        </Button>
 
-    <TextView
-        android:id="@+id/textViewCalories"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Калории: 0"
-        android:textSize="18sp" />
-</LinearLayout>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
