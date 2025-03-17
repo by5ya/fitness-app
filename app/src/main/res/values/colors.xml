@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="primary_color">#333333</color> <!-- Темно-серый -->
+    <color name="accent_color">#2e93ff</color> <!-- Голубой -->
+    <color name="secondary_color">#ff9a2e</color> <!-- Оранжевый -->
+    <color name="white">#FFFFFF</color> <!-- Белый -->
 </resources>

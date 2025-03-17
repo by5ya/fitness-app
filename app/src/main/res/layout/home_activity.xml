@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".MainActivity"
+    android:backgroundTint="@color/primary_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/primary_color"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Аватарка (круглая кнопка) -->
+        <ImageButton
+            android:id="@+id/avatarButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/circle_background"
+            android:src="@drawable/ic_avatar"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/avatar_button_description"
+            android:padding="4dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <!-- Контейнер даты -->
+        <LinearLayout
+            android:layout_width="198dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <!-- Заголовок "Hello Linh!" -->
+            <TextView
+                android:id="@+id/helloTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello, Linh!"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <!-- Дата "Thursday, 08 July" -->
+            <TextView
+                android:id="@+id/dateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Thursday, 08 July"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <!-- Иконка календаря -->
+        <ImageView
+            android:id="@+id/calendarIcon"
+            android:layout_width="56dp"
+            android:layout_height="47dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/calendar_button_description"
+            android:padding="4dp"
+            android:src="@drawable/ic_calendar" />
+    </LinearLayout>
+
+    <!--
+         Основные показатели
+        <LinearLayout
+            android:id="@+id/statsLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="4"
+            app:layout_constraintTop_toBottomOf="@id/dateTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="16dp">
+
+             Калории
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1,883 Kcal"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Kilocalories"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_color"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+             Дистанция
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="7,580m"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distance"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_color"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+             Шаги
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="9,832"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Steps"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_color"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+             Очки
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1,248"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Points"
+                    android:textSize="14sp"
+                    android:textColor="@color/primary_color"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+         Активные действия
+        <LinearLayout
+            android:id="@+id/activitiesLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintTop_toBottomOf="@id/statsLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginHorizontal="16dp">
+
+             Dumbbell
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_dumbbell"
+                    android:contentDescription="@string/dumbbell" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="628 Kcal"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+             Treadmill
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_treadmill"
+                    android:contentDescription="@string/treadmill" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="235 Kcal"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+             Rope
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/ic_rope"
+                    android:contentDescription="@string/rope" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="432 Kcal"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+         План тренировок
+        <TextView
+            android:id="@+id/myPlanTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="My Plan"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/activitiesLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp" />
+
+         Дополнительные элементы
+        <TextView
+            android:id="@+id/inviteFriendsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invite your friends"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/myPlanTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp" />-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">fitness-app</string>
+    <string name="app_name">Pump house</string>
+    <string name="calendar_button_description">Открыть календарь</string>
+    <string name="avatar_button_description">Открыть профиль</string>
 </resources>
