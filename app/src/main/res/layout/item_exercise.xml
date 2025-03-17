@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/rounded_item_background"
+    android:padding="16dp"
+    android:layout_marginBottom="8dp">
+
+    <!-- Заголовок -->
+    <ImageView
+        android:id="@+id/imageViewExercise"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/circle_background"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textViewExerciseName"
+        android:layout_width="259dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="16dp"
+        android:text="Bicep"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/imageViewArrow"
+        app:layout_constraintStart_toEndOf="@id/imageViewExercise"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Подзаголовок -->
+    <TextView
+        android:id="@+id/textViewExerciseDetails"
+        android:layout_width="276dp"
+        android:layout_height="18dp"
+        android:layout_marginTop="4dp"
+        android:text="Body-Back, Body-Butt, Legs and Core"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/imageViewArrow"
+        app:layout_constraintStart_toEndOf="@id/imageViewExercise"
+        app:layout_constraintTop_toBottomOf="@id/textViewExerciseName" />
+
+    <!-- Стрелочка ">" -->
+    <ImageView
+        android:id="@+id/imageViewArrow"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/icon_right"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
