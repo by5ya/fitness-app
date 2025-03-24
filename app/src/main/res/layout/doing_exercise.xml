@@ -12,6 +12,11 @@
         android:layout_height="wrap_content"
         android:textSize="24sp"
         android:textStyle="bold" />
+    <ImageView
+        android:id="@+id/imageViewDoExercise"
+        android:layout_width="400px"
+        android:layout_height="500px">
+    </ImageView>
 
 
     <TextView

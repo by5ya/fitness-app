@@ -4,11 +4,14 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +32,7 @@ public class DoingExercise extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_PERMISSIONS = 2;
     private BluetoothAdapter bluetoothAdapter;
+    private ImageView imageViewDoExercise;
     private TextView textViewSteps, textViewHeartRate, textViewCalories, textViewMinPulse, textViewExerciseName;
     private DatabaseHelper dbHelper;
 
@@ -42,6 +46,7 @@ public class DoingExercise extends AppCompatActivity {
         textViewCalories = findViewById(R.id.textViewCalories);
         textViewMinPulse = findViewById(R.id.textViewMinPulse);
         textViewExerciseName = findViewById(R.id.textViewExerciseName);
+        imageViewDoExercise = findViewById(R.id.imageViewDoExercise);
 
         dbHelper = new DatabaseHelper(this);
 
@@ -50,11 +55,13 @@ public class DoingExercise extends AppCompatActivity {
             updateHeartRate(heartRate);
             updateCalories(calories);
         });
+
         LOGGER.log(Level.INFO, "Устройство браслета создано");
         checkAndRequestPermissions();
         LOGGER.log(Level.INFO, "Разрешения проверены");
         String exerciseName = getIntent().getStringExtra("exerciseName");
         LOGGER.log(Level.INFO, "Передано название упражнения");
+        mockFitbitDevice.start();
 
         // Поиск упражнения в базе данных по имени
         Exercise exercise = findExerciseByName(exerciseName);
@@ -64,6 +71,13 @@ public class DoingExercise extends AppCompatActivity {
             LOGGER.log(Level.INFO, "установлено значение имени");
             textViewMinPulse.setText("Минимальный пульс: " + exercise.getMinPulse());
             LOGGER.log(Level.INFO, "установлено значение пульса");
+            String filePath = exercise.getGifPath();
+            MediaScannerConnection.scanFile(this, new String[]{filePath}, null, null);
+            Glide.with(this)
+                    .asGif() // Указываем, что это GIF
+                    .load(filePath) // Путь к GIF
+                    .into(imageViewDoExercise);
+            LOGGER.log(Level.INFO, "установлено gif");
 
         } else {
             textViewExerciseName.setText("Упражнение не найдено");

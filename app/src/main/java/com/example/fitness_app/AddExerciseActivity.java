@@ -1,8 +1,10 @@
 package com.example.fitness_app;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,7 +26,7 @@ import java.io.InputStream;
 
 public class AddExerciseActivity extends AppCompatActivity {
 
-    private EditText editTextName, editTextMinPulse, editTextGifPath;
+    private EditText editTextName, editTextMinPulse;
     private static final int PICK_IMAGE_REQUEST = 1;
     private Button buttonAddExercise, buttonChooseGif;
     private DatabaseHelper dbHelper;
@@ -47,7 +49,6 @@ public class AddExerciseActivity extends AppCompatActivity {
         editTextName = findViewById(R.id.editTextName);
         buttonChooseGif = findViewById(R.id.buttonChooseGif);
         editTextMinPulse = findViewById(R.id.editTextMinPulse);
-        editTextGifPath = findViewById(R.id.editTextGifPath);
         buttonAddExercise = findViewById(R.id.buttonAddExercise);
 
         dbHelper = new DatabaseHelper(this);
@@ -97,12 +98,14 @@ public class AddExerciseActivity extends AppCompatActivity {
             }
         });
     }
+
     private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Открываем галерею для выбора GIF-файлов
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/gif"); // Устанавливаем MIME-тип для выбора только GIF
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(intent, PICK_IMAGE_REQUEST);
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -112,12 +115,6 @@ public class AddExerciseActivity extends AppCompatActivity {
             if (selectedImageUri != null) {
                 // Сохраняем GIF в внутреннее хранилище
                 String gifPath = saveGifToInternalStorage(selectedImageUri);
-                if (gifPath != null) {
-                    // Устанавливаем путь к GIF в EditText
-                    editTextGifPath.setText(gifPath);
-                } else {
-                    Log.e(TAG, "Failed to save GIF");
-                }
             } else {
                 Log.e(TAG, "Selected GIF URI is null");
             }
@@ -150,5 +147,15 @@ public class AddExerciseActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+    public void updateMediaDatabase(Context context, String filePath) {
+        MediaScannerConnection.scanFile(context, new String[]{filePath}, null, new MediaScannerConnection.OnScanCompletedListener() {
+            @Override
+            public void onScanCompleted(String path, Uri uri) {
+                // Здесь вы можете обработать результат сканирования, если это необходимо
+                Log.i("MediaScanner", "Scanned " + path + ":");
+                Log.i("MediaScanner", "-> uri=" + uri);
+            }
+        });
     }
 }
