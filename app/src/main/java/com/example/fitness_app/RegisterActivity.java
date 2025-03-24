@@ -1,6 +1,7 @@
 package com.example.fitness_app;// Java
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.fitness_app.LoginActivity;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -20,6 +22,16 @@ public class RegisterActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .build());
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 

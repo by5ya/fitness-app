@@ -15,12 +15,13 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "exercises.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Таблица упражнений
     private static final String TABLE_EXERCISES = "exercises";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_TYPE = "type";
     private static final String COLUMN_GIF_PATH = "gif_path";
     private static final String COLUMN_MIN_PULSE = "min_pulse";
 
@@ -36,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String CREATE_EXERCISES_TABLE = "CREATE TABLE " + TABLE_EXERCISES + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_NAME + " TEXT,"
+                + COLUMN_TYPE + " TEXT," // Исправлено: добавлен пробел перед TEXT
                 + COLUMN_GIF_PATH + " TEXT,"
                 + COLUMN_MIN_PULSE + " INTEGER" + ")";
         db.execSQL(CREATE_EXERCISES_TABLE);
@@ -56,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, exercise.getName());
+        values.put(COLUMN_TYPE, exercise.getType());
         values.put(COLUMN_GIF_PATH, exercise.getGifPath());
         values.put(COLUMN_MIN_PULSE, exercise.getMinPulse());
 
@@ -71,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Exercise getExercise(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_EXERCISES, new String[] { COLUMN_ID,
-                        COLUMN_NAME, COLUMN_GIF_PATH, COLUMN_MIN_PULSE }, COLUMN_ID + "=?",
+                        COLUMN_NAME, COLUMN_TYPE, COLUMN_GIF_PATH, COLUMN_MIN_PULSE }, COLUMN_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
 
         if (cursor != null)
@@ -81,7 +84,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return null;
         }
 
-        Exercise exercise = new Exercise(cursor.getString(1), cursor.getString(2), cursor.getInt(3));
+        Exercise exercise = new Exercise(cursor.getString(1), cursor.getString(2),cursor.getString(3), cursor.getInt(4));
         exercise.setId(Integer.parseInt(cursor.getString(0)));
 
         db.close();
@@ -106,8 +109,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Exercise exercise = new Exercise();
                 exercise.setId(Integer.parseInt(cursor.getString(0)));
                 exercise.setName(cursor.getString(1));
-                exercise.setGifPath(cursor.getString(2));
-                exercise.setMinPulse(Integer.parseInt(cursor.getString(3)));
+                exercise.setType(cursor.getString(2));
+                exercise.setGifPath(cursor.getString(3));
+                exercise.setMinPulse(Integer.parseInt(cursor.getString(4)));
                 // Добавляем упражнение в список
                 exerciseList.add(exercise);
             } while (cursor.moveToNext());
@@ -126,6 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, exercise.getName());
+        values.put(COLUMN_TYPE, exercise.getType());
         values.put(COLUMN_GIF_PATH, exercise.getGifPath());
         values.put(COLUMN_MIN_PULSE, exercise.getMinPulse());
 

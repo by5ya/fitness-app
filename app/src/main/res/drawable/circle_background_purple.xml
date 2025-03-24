@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/accent_color_purple" /> <!-- Цвет фона -->
+    <corners android:radius="999dp" /> <!-- Делаем круглую форму -->
+    <size android:width="56dp" android:height="56dp" /> <!-- Размер -->
+</shape>

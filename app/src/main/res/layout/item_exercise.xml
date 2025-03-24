@@ -13,7 +13,7 @@
         android:id="@+id/imageViewExercise"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        android:background="@drawable/circle_background"
+        android:background="@drawable/circle_background_blue"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_arrow"
         app:layout_constraintBottom_toBottomOf="parent"

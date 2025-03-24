@@ -37,7 +37,7 @@ public class ExerciseListActivity extends AppCompatActivity {
         loadExercises();
 
         // Создаем адаптер для ListView
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getExerciseNames());
+        ExerciseAdapter adapter = new ExerciseAdapter(this, exerciseList);
         listViewExercises.setAdapter(adapter);
 
         // Обработчик нажатия на элемент списка
@@ -59,6 +59,7 @@ public class ExerciseListActivity extends AppCompatActivity {
 
     // Загрузка упражнений из базы данных
     private void loadExercises() {
+        exerciseList.clear();
         exerciseList = dbHelper.getAllExercises();
         Log.d(TAG, "Loaded " + exerciseList.size() + " exercises from database.");
     }
@@ -78,7 +79,7 @@ public class ExerciseListActivity extends AppCompatActivity {
         // Перезагружаем список упражнений при возвращении в Activity,
         // чтобы отобразить новые упражнения, добавленные в AddExerciseActivity
         loadExercises();
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, getExerciseNames());
+        ExerciseAdapter adapter = new ExerciseAdapter(this, exerciseList);
         listViewExercises.setAdapter(adapter);
     }
 }

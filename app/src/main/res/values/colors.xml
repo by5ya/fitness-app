@@ -2,7 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="primary_color">#333333</color> <!-- Темно-серый -->
-    <color name="accent_color">#2e93ff</color> <!-- Голубой -->
+    <color name="accent_color">#2e93ff</color>
+    <color name="accent_color_red">#D50000</color>
+    <color name="accent_color_purple">#6200EA</color>
+    <color name="accent_color_green">#00C853</color>
+    <color name="accent_color_orange">#FF6D00</color>
+    <color name="accent_color_yellow">#FFD600</color><!-- Голубой -->
     <color name="secondary_color">#ff9a2e</color> <!-- Оранжевый -->
     <color name="white">#FFFFFF</color> <!-- Белый -->
 </resources>

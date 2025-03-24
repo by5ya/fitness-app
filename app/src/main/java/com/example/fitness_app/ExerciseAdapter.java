@@ -29,22 +29,57 @@ public class ExerciseAdapter extends ArrayAdapter<Exercise> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.item_exercise, parent, false);
+        ViewHolder holder;
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.item_exercise, parent, false);
+            holder = new ViewHolder();
+            holder.imageViewExercise = convertView.findViewById(R.id.imageViewExercise);
+            holder.textViewExerciseName = convertView.findViewById(R.id.textViewExerciseName);
+            holder.textViewExerciseDetails = convertView.findViewById(R.id.textViewExerciseDetails);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         // Получаем текущее упражнение
         Exercise exercise = exercises.get(position);
 
-        // Находим элементы в макете
-        ImageView imageViewExercise = rowView.findViewById(R.id.imageViewExercise);
-        TextView textViewExerciseName = rowView.findViewById(R.id.textViewExerciseName);
-        TextView textViewExerciseDetails = rowView.findViewById(R.id.textViewExerciseDetails);
+        // Устанавливаем текстовые значения
+        holder.textViewExerciseName.setText(exercise.getName());
+        holder.textViewExerciseDetails.setText(String.valueOf(exercise.getMinPulse()));
 
-        // Устанавливаем данные
-        imageViewExercise.setImageResource(exercise.getImageResource()); // Установите изображение
-        textViewExerciseName.setText(exercise.getName());
-        textViewExerciseDetails.setText(exercise.getDetails());
+        // Устанавливаем фон в зависимости от типа упражнения
+        switch (exercise.getType()) {
+            case "Руки":
+                holder.imageViewExercise.setBackgroundResource(R.drawable.circle_background_blue);
+                break;
+            case "Спина":
+                holder.imageViewExercise.setBackgroundResource(R.drawable.circle_background_green);
+                break;
+            case "Грудь":
+                holder.imageViewExercise.setBackgroundResource(R.drawable.circle_background_red);
+                break;
+            case "Ноги":
+                holder.imageViewExercise.setBackgroundResource(R.drawable.circle_background_red);
+                break;
+            case "Ягодицы":
+                holder.imageViewExercise.setBackgroundResource(R.drawable.circle_background_yellow);
+                break;
+            case "Плечи":
+                holder.imageViewExercise.setBackgroundResource(R.drawable.circle_background_purple);
+                break;
+            default:
+                holder.imageViewExercise.setBackgroundResource(R.drawable.circle_background_blue);
+                break;
+        }
 
-        return rowView;
+        return convertView;
+    }
+
+    static class ViewHolder {
+        ImageView imageViewExercise;
+        TextView textViewExerciseName;
+        TextView textViewExerciseDetails;
     }
 }

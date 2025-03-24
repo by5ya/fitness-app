@@ -23,7 +23,7 @@
             android:id="@+id/avatarButton"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:background="@drawable/circle_background"
+            android:background="@drawable/circle_background_blue"
             android:src="@drawable/ic_avatar"
             android:scaleType="centerCrop"
             android:contentDescription="@string/avatar_button_description"

@@ -15,17 +15,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
-
-    <TextView
-        android:layout_width="wrap_content"
+    <Spinner
+        android:id="@+id/type_spinner"
+        android:layout_width="300px"
+        android:layout_height="150px">
+    </Spinner>
+    <Button
+        android:id="@+id/buttonChooseGif"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="Путь к GIF:" />
-
+        android:text="Выбрать Gif" />
     <EditText
         android:id="@+id/editTextGifPath"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text" />
+        android:layout_height="wrap_content">
+    </EditText>
 
     <TextView
         android:layout_width="wrap_content"
