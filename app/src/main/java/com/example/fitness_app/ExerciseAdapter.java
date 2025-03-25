@@ -47,7 +47,7 @@ public class ExerciseAdapter extends ArrayAdapter<Exercise> {
 
         // Устанавливаем текстовые значения
         holder.textViewExerciseName.setText(exercise.getName());
-        holder.textViewExerciseDetails.setText(String.valueOf(exercise.getMinPulse()));
+        holder.textViewExerciseDetails.setText("Мин. пульс: "+ String.valueOf(exercise.getMinPulse()) +"  " + "Группа мышц: " + exercise.getType());
 
         // Устанавливаем фон в зависимости от типа упражнения
         switch (exercise.getType()) {

@@ -7,7 +7,9 @@ import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +37,10 @@ public class DoingExercise extends AppCompatActivity {
     private ImageView imageViewDoExercise;
     private TextView textViewSteps, textViewHeartRate, textViewCalories, textViewMinPulse, textViewExerciseName;
     private DatabaseHelper dbHelper;
+    private Button buttonStartStop;
+    private boolean isExercising = false; // Флаг для отслеживания состояния упражнения
+    private CountDownTimer countDownTimer; // Таймер
+    private long timeLeftInMillis = 600000; // Время в миллисекундах (например, 10 минут)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,24 +53,33 @@ public class DoingExercise extends AppCompatActivity {
         textViewMinPulse = findViewById(R.id.textViewMinPulse);
         textViewExerciseName = findViewById(R.id.textViewExerciseName);
         imageViewDoExercise = findViewById(R.id.imageViewDoExercise);
+        buttonStartStop = findViewById(R.id.buttonStartStop);
+
 
         dbHelper = new DatabaseHelper(this);
 
-        mockFitbitDevice = new MockFitbitDevice((steps, heartRate, calories) -> {
-            updateSteps(steps);
-            updateHeartRate(heartRate);
-            updateCalories(calories);
-        });
+
 
         LOGGER.log(Level.INFO, "Устройство браслета создано");
         checkAndRequestPermissions();
         LOGGER.log(Level.INFO, "Разрешения проверены");
         String exerciseName = getIntent().getStringExtra("exerciseName");
         LOGGER.log(Level.INFO, "Передано название упражнения");
-        mockFitbitDevice.start();
 
         // Поиск упражнения в базе данных по имени
         Exercise exercise = findExerciseByName(exerciseName);
+        mockFitbitDevice = new MockFitbitDevice((steps, heartRate, calories) -> {
+            updateSteps(steps);
+            updateHeartRate(heartRate, exercise);
+            updateCalories(calories);
+        });
+        buttonStartStop.setOnClickListener(v -> {
+            if (!isExercising) {
+                startExercise(exercise);
+            } else {
+                stopExercise();
+            }
+        });
 
         if (exercise != null) {
             textViewExerciseName.setText(exercise.getName());
@@ -83,6 +98,48 @@ public class DoingExercise extends AppCompatActivity {
             textViewExerciseName.setText("Упражнение не найдено");
             LOGGER.log(Level.INFO, "Exercise with name '" + exerciseName + "' not found in database.");
         }
+
+    }
+    private void startExercise(Exercise exercise) {
+        isExercising = true;
+        buttonStartStop.setText("Завершить");
+        startTimer(exercise);
+        mockFitbitDevice.start(); // Начинаем получать данные от устройства
+    }
+
+    private void stopExercise() {
+        isExercising = false;
+        buttonStartStop.setText("Начать");
+        if (countDownTimer != null) {
+            countDownTimer.cancel(); // Останавливаем таймер
+        }
+        mockFitbitDevice.stop(); // Останавливаем получение данных от устройства
+    }
+    private void startTimer(Exercise exercise) {
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftInMillis = millisUntilFinished;
+                // Обновите UI, если нужно
+                // Например, обновите текстовое поле с оставшимся временем
+            }
+
+            @Override
+            public void onFinish() {
+                stopExercise(); // Останавливаем упражнение, когда таймер истекает
+                Toast.makeText(DoingExercise.this, "Время вышло!", Toast.LENGTH_SHORT).show();
+            }
+        }.start();
+
+        // Проверка пульса
+        mockFitbitDevice.setHeartRateListener((heartRate) -> {
+            LOGGER.log(Level.INFO, "Текущий пульс: " + heartRate);
+            if (heartRate < exercise.getMinPulse()) {
+                runOnUiThread(() -> {
+                    Toast.makeText(DoingExercise.this, "Пульс ниже минимального! Вы не делаете упражнение.", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
     }
 
     // Поиск упражнения в базе данных по имени
@@ -211,9 +268,15 @@ public class DoingExercise extends AppCompatActivity {
         runOnUiThread(() -> textViewSteps.setText("Шаги: " + steps));
     }
 
-    private void updateHeartRate(int heartRate) {
-        runOnUiThread(() -> textViewHeartRate.setText("Пульс: " + heartRate + " уд/мин"));
-    }
+    private void updateHeartRate(int heartRate, Exercise exercise) {
+        runOnUiThread(() -> {
+            textViewHeartRate.setText("Пульс: " + heartRate + " уд/мин");
+            if (heartRate < exercise.getMinPulse()) {
+                Toast.makeText(DoingExercise.this, "Пульс ниже минимального! Вы не делаете упражнение.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    };
+
 
     private void updateCalories(int calories) {
         runOnUiThread(() -> textViewCalories.setText("Калории: " + calories + " ккал"));

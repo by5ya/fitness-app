@@ -46,4 +46,9 @@
         android:layout_height="wrap_content"
         android:text="Калории: 0"
         android:textSize="18sp" />
+    <Button
+        android:id="@+id/buttonStartStop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Начать" />
 </LinearLayout>

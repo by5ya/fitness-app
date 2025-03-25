@@ -1,5 +1,7 @@
 package com.example.fitness_app;
 
+import com.example.fitness_app.services.HeartRateListener;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -7,6 +9,18 @@ public class MockFitbitDevice {
 
     private final Logger LOGGER = Logger.getLogger(MockFitbitDevice.class.getName());
 
+    private HeartRateListener heartRateListener;
+
+    public void setHeartRateListener(HeartRateListener listener) {
+        this.heartRateListener = listener;
+    }
+
+    // Метод, который будет вызываться при обновлении пульса
+    private void updateHeartRate(int heartRate) {
+        if (heartRateListener != null) {
+            heartRateListener.onHeartRateChanged(heartRate);
+        }
+    }
     public interface FitbitDataListener {
         void onDataReceived(int steps, int heartRate, int calories);
     }
