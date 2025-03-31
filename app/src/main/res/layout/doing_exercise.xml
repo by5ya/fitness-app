@@ -26,12 +26,6 @@
         android:layout_marginTop="16dp"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/textViewSteps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Шаги: 0"
-        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/textViewHeartRate"
@@ -40,12 +34,6 @@
         android:text="Пульс: 0"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/textViewCalories"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Калории: 0"
-        android:textSize="18sp" />
     <Button
         android:id="@+id/buttonStartStop"
         android:layout_width="wrap_content"

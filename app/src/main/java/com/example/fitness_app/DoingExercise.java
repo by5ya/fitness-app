@@ -8,6 +8,7 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,9 +22,21 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.fitness_app.models.Exercise;
+import com.example.fitness_app.models.ExerciseRecord;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DatabaseError;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,14 +55,14 @@ public class DoingExercise extends AppCompatActivity {
     private CountDownTimer countDownTimer; // Таймер
     private long timeLeftInMillis = 600000; // Время в миллисекундах (например, 10 минут)
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.doing_exercise);
+        FirebaseApp.initializeApp(this);
 
-        textViewSteps = findViewById(R.id.textViewSteps);
         textViewHeartRate = findViewById(R.id.textViewHeartRate);
-        textViewCalories = findViewById(R.id.textViewCalories);
         textViewMinPulse = findViewById(R.id.textViewMinPulse);
         textViewExerciseName = findViewById(R.id.textViewExerciseName);
         imageViewDoExercise = findViewById(R.id.imageViewDoExercise);
@@ -68,16 +81,16 @@ public class DoingExercise extends AppCompatActivity {
 
         // Поиск упражнения в базе данных по имени
         Exercise exercise = findExerciseByName(exerciseName);
-        mockFitbitDevice = new MockFitbitDevice((steps, heartRate, calories) -> {
-            updateSteps(steps);
+        mockFitbitDevice = new MockFitbitDevice((heartRate) -> {
+
             updateHeartRate(heartRate, exercise);
-            updateCalories(calories);
         });
         buttonStartStop.setOnClickListener(v -> {
             if (!isExercising) {
                 startExercise(exercise);
             } else {
                 stopExercise();
+                Log.d("Остановка упражнения", "упражнение удачно приостановлено");
             }
         });
 
@@ -103,7 +116,7 @@ public class DoingExercise extends AppCompatActivity {
     private void startExercise(Exercise exercise) {
         isExercising = true;
         buttonStartStop.setText("Завершить");
-        startTimer(exercise);
+        startTimer();
         mockFitbitDevice.start(); // Начинаем получать данные от устройства
     }
 
@@ -111,11 +124,14 @@ public class DoingExercise extends AppCompatActivity {
         isExercising = false;
         buttonStartStop.setText("Начать");
         if (countDownTimer != null) {
-            countDownTimer.cancel(); // Останавливаем таймер
+            countDownTimer.cancel();
         }
-        mockFitbitDevice.stop(); // Останавливаем получение данных от устройства
+        mockFitbitDevice.stop();
+
+        saveExerciseData();
+
     }
-    private void startTimer(Exercise exercise) {
+    private void startTimer() {
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -131,15 +147,6 @@ public class DoingExercise extends AppCompatActivity {
             }
         }.start();
 
-        // Проверка пульса
-        mockFitbitDevice.setHeartRateListener((heartRate) -> {
-            LOGGER.log(Level.INFO, "Текущий пульс: " + heartRate);
-            if (heartRate < exercise.getMinPulse()) {
-                runOnUiThread(() -> {
-                    Toast.makeText(DoingExercise.this, "Пульс ниже минимального! Вы не делаете упражнение.", Toast.LENGTH_SHORT).show();
-                });
-            }
-        });
     }
 
     // Поиск упражнения в базе данных по имени
@@ -263,11 +270,6 @@ public class DoingExercise extends AppCompatActivity {
         }
     }
 
-
-    private void updateSteps(int steps) {
-        runOnUiThread(() -> textViewSteps.setText("Шаги: " + steps));
-    }
-
     private void updateHeartRate(int heartRate, Exercise exercise) {
         runOnUiThread(() -> {
             textViewHeartRate.setText("Пульс: " + heartRate + " уд/мин");
@@ -277,8 +279,50 @@ public class DoingExercise extends AppCompatActivity {
         });
     };
 
+    private void saveExerciseData() {
 
-    private void updateCalories(int calories) {
-        runOnUiThread(() -> textViewCalories.setText("Калории: " + calories + " ккал"));
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (currentUser == null){ Log.d("Ошибка", "Пользователь не найден"); return;};
+
+        // Получаем данные
+        String exerciseName = textViewExerciseName.getText().toString();
+        String heartRate = textViewHeartRate.getText().toString().replace("Пульс: ", "");
+        String dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                .format(new Date());
+
+        Log.d("Информация", "Данные для записи получены");
+
+        // Создаем объект для сохранения
+        ExerciseRecord record = new ExerciseRecord(
+                exerciseName,
+                heartRate,
+                dateTime
+        );
+
+        // Сохраняем в Firebase
+        DatabaseReference database = FirebaseDatabase.getInstance("https://fitness-app-190c1-default-rtdb.firebaseio.com/").getReference();
+        database.child("users")
+                .child(currentUser.getUid())
+                .child("exerciseHistory")
+                .push() // Генерируем уникальный ID для записи
+                .setValue(record)
+                .addOnSuccessListener(aVoid -> Log.d("Firebase", "Данные сохранены"))
+                .addOnFailureListener(e -> Log.e("Firebase", "Ошибка сохранения"));
+
+        FirebaseDatabase.getInstance().getReference(".info/connected")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Boolean connected = snapshot.getValue(Boolean.class);
+                        Log.d("Firebase", "Connected: " + connected);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("Firebase", "Connection error", error.toException());
+                    }
+                });
     }
+
 }

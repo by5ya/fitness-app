@@ -5,14 +5,14 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS) // или PREFER_PROJECT
     repositories {
         google()
         mavenCentral()
     }
 }
-
 rootProject.name = "fitness-app"
 include(":app")
  
