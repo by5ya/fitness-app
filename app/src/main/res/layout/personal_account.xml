@@ -1,33 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/primary_color">
 
+    <!-- Шапка профиля -->
     <LinearLayout
+        android:id="@+id/avatar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
-        <TextView
-            android:id="@+id/user_name"
-            android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:background="@color/primary_color"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageButton
+            android:id="@+id/avatarButton"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/circle_background_blue"
+            android:src="@drawable/ic_avatar"
+            android:scaleType="centerCrop"
+            android:contentDescription="Аватар пользователя"
+            android:padding="4dp"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Имя пользователя"
-            android:textSize="40dp">
-        </TextView>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="28dp"
-            android:text="История тренировок:">
-        </TextView>
-        <ListView
-            android:id="@+id/listViewExercises"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:dividerHeight="1dp"
-            android:padding="8dp" />
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Имя пользователя"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/dateTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Понедельник, 12 июня"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
+    <!-- Заголовок истории тренировок -->
+    <TextView
+        android:id="@+id/history_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="История тренировок:"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp"
+        app:layout_constraintTop_toBottomOf="@id/avatar"/>
+
+    <!-- Список тренировок -->
+    <ListView
+        android:id="@+id/listViewExercises"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:divider="@color/gray_light"
+        android:dividerHeight="1dp"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/history_text"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

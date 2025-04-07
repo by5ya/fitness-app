@@ -9,40 +9,27 @@
     android:layout_marginBottom="8dp">
 
 
-
     <TextView
         android:id="@+id/textViewExerciseName"
         android:layout_width="259dp"
         android:layout_height="30dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="92dp"
         android:text="Bicep"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@id/imageViewArrow"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="20dp" />
 
     <TextView
         android:id="@+id/textViewExerciseDetails"
         android:layout_width="276dp"
         android:layout_height="18dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="76dp"
         android:text="Body-Back, Body-Butt, Legs and Core"
         android:textColor="@color/white"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@id/imageViewArrow"
-        app:layout_constraintTop_toBottomOf="@id/textViewExerciseName" />
-
-    <ImageView
-        android:id="@+id/imageViewArrow"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:src="@drawable/icon_right"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/white" />
+        app:layout_constraintTop_toBottomOf="@id/textViewExerciseName"
+        tools:layout_editor_absoluteX="19dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

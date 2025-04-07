@@ -2,46 +2,102 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="24dp"
+    android:background="@color/primary_color">
 
+    <!-- Название упражнения -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Название упражнения:" />
+        android:text="Название упражнения:"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text" />
-    <Spinner
-        android:id="@+id/type_spinner"
-        android:layout_width="300px"
-        android:layout_height="150px">
-    </Spinner>
-    <Button
-        android:id="@+id/buttonChooseGif"
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:text="Выбрать Gif" />
+        android:background="@drawable/edit_text_background"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:hint="Введите название"
+        android:padding="16dp"
+        android:layout_marginBottom="16dp"/>
 
-
+    <!-- Тип упражнения -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Минимальный пульс:" />
+        android:text="Тип упражнения:"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"/>
+
+    <Spinner
+        android:id="@+id/type_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/spinner_background"
+        android:popupBackground="@color/white"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Кнопка выбора GIF -->
+    <Button
+        android:id="@+id/buttonChooseGif"
+        android:layout_width="250dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:text="Выбрать GIF"
+        android:background="@drawable/rounded_button_accent"
+        android:layout_marginBottom="16dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:stateListAnimator="@animator/button_state_animator"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:translationZ="4dp"
+        android:textAllCaps="false"
+        app:background="@null"/>
+
+    <!-- Минимальный пульс -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Минимальный пульс:"
+        android:textColor="@color/white"
+        android:layout_marginBottom="8dp"/>
 
     <EditText
         android:id="@+id/editTextMinPulse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="number" />
+        android:background="@drawable/edit_text_background"
+        android:textColor="@color/black"
+        android:textColorHint="@color/gray"
+        android:hint="Введите значение"
+        android:inputType="number"
+        android:padding="16dp"
+        android:layout_marginBottom="24dp"/>
 
+    <!-- Кнопка добавления -->
     <Button
         android:id="@+id/buttonAddExercise"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Добавить упражнение" />
-
+        android:layout_width="220dp"
+        android:layout_height="66dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        app:backgroundTint="@null"
+        android:gravity="center"
+        android:text="Добавить упражнение"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:background="@drawable/rounded_item_background"
+        android:foreground="?attr/selectableItemBackground"
+        android:stateListAnimator="@animator/button_state_animator"
+        android:elevation="4dp"
+        android:translationZ="4dp"/>
 </LinearLayout>

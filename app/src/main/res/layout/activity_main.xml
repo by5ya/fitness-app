@@ -1,39 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    >
+    android:background="@color/primary_color"
+    android:padding="24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        tools:ignore="MissingConstraints">
+        <!-- Кнопка "Добавить упражнение" -->
         <Button
             android:id="@+id/add_exercise"
+            app:backgroundTint="@null"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="24dp"
             android:text="Добавить упражнение"
-            android:layout_width="500px"
-            android:layout_height="150px"
-            android:layout_marginStart="100dp">
-        </Button>
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:background="@drawable/rounded_item_background"
+            android:foreground="?attr/selectableItemBackground"
+            android:stateListAnimator="@animator/button_state_animator"
+            android:elevation="4dp"
+            android:translationZ="4dp"/>
+
+        <!-- Кнопка "Начать тренировку" -->
         <Button
             android:id="@+id/start_train"
+            app:backgroundTint="@null"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="24dp"
             android:text="Начать тренировку"
-            android:layout_width="500px"
-            android:layout_height="150px"
-            android:layout_marginStart="100dp">
-        </Button>
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            android:background="@drawable/rounded_item_background"
+            android:foreground="?attr/selectableItemBackground"
+            android:stateListAnimator="@animator/button_state_animator"
+            android:elevation="4dp"
+            android:translationZ="4dp"/>
+
+        <!-- Кнопка "Личный кабинет" -->
         <Button
             android:id="@+id/personal_data"
+            android:layout_width="300dp"
+            android:layout_height="100dp"
             android:text="Личный кабинет"
-            android:layout_width="500px"
-            android:layout_height="150px"
-            android:layout_marginStart="100dp">
-        </Button>
-
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:textAllCaps="false"
+            app:cornerRadius="50dp"
+            app:rippleColor="@color/secondary_color_dark"
+            android:elevation="4dp"
+            android:translationZ="4dp"
+            android:background="@drawable/rounded_item_background"
+            app:backgroundTint="@null"
+            style="@style/Widget.Material3.Button"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

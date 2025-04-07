@@ -9,5 +9,8 @@
     <color name="accent_color_orange">#FF6D00</color>
     <color name="accent_color_yellow">#FFD600</color><!-- Голубой -->
     <color name="secondary_color">#ff9a2e</color> <!-- Оранжевый -->
+    <color name="secondary_color_dark">#e07d00</color> <!-- Темный оранжевый для pressed состояния -->
     <color name="white">#FFFFFF</color> <!-- Белый -->
+    <color name="gray">#808080</color> <!-- Для подсказок -->
+    <color name="gray_light">#EEEEEE</color>
 </resources>
