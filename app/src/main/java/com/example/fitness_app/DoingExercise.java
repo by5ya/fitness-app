@@ -48,12 +48,12 @@ public class DoingExercise extends AppCompatActivity {
     private static final int REQUEST_PERMISSIONS = 2;
     private BluetoothAdapter bluetoothAdapter;
     private ImageView imageViewDoExercise;
-    private TextView textViewSteps, textViewHeartRate, textViewCalories, textViewMinPulse, textViewExerciseName;
+    private TextView textViewSteps, textViewHeartRate, textViewCalories, textViewMinPulse, textViewExerciseName, textViewTimer;
     private DatabaseHelper dbHelper;
     private Button buttonStartStop;
     private boolean isExercising = false; // Флаг для отслеживания состояния упражнения
     private CountDownTimer countDownTimer; // Таймер
-    private long timeLeftInMillis = 600000; // Время в миллисекундах (например, 10 минут)
+    private long elapsedTimeInMillis = 0;
 
 
     @Override
@@ -67,6 +67,7 @@ public class DoingExercise extends AppCompatActivity {
         textViewExerciseName = findViewById(R.id.textViewExerciseName);
         imageViewDoExercise = findViewById(R.id.imageViewDoExercise);
         buttonStartStop = findViewById(R.id.buttonStartStop);
+        textViewTimer = findViewById(R.id.timer);
 
 
         dbHelper = new DatabaseHelper(this);
@@ -124,7 +125,7 @@ public class DoingExercise extends AppCompatActivity {
         isExercising = false;
         buttonStartStop.setText("Начать");
         if (countDownTimer != null) {
-            countDownTimer.cancel();
+            countDownTimer.cancel(); // Останавливаем таймер
         }
         mockFitbitDevice.stop();
 
@@ -132,21 +133,26 @@ public class DoingExercise extends AppCompatActivity {
 
     }
     private void startTimer() {
-        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+        countDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000) { // Используем Long.MAX_VALUE для бесконечного таймера
             @Override
             public void onTick(long millisUntilFinished) {
-                timeLeftInMillis = millisUntilFinished;
-                // Обновите UI, если нужно
-                // Например, обновите текстовое поле с оставшимся временем
+                elapsedTimeInMillis += 1000; // Увеличиваем прошедшее время на 1 секунду
+                updateTimer(); // Обновляем таймер
             }
 
             @Override
             public void onFinish() {
-                stopExercise(); // Останавливаем упражнение, когда таймер истекает
-                Toast.makeText(DoingExercise.this, "Время вышло!", Toast.LENGTH_SHORT).show();
+                // Этот метод не будет вызван, так как мы используем Long.MAX_VALUE
             }
         }.start();
+    }
 
+    private void updateTimer() {
+        int minutes = (int) (elapsedTimeInMillis / 1000) / 60;
+        int seconds = (int) (elapsedTimeInMillis / 1000) % 60;
+
+        String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+        textViewTimer.setText(timeLeftFormatted); // Обновляем текстовое поле
     }
 
     // Поиск упражнения в базе данных по имени
