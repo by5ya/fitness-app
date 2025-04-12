@@ -2,6 +2,13 @@ package com.example.fitness_app;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.MediaScannerConnection;
@@ -14,6 +21,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 
 import androidx.annotation.NonNull;
@@ -37,23 +45,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DoingExercise extends AppCompatActivity {
 
     private final Logger LOGGER = Logger.getLogger(DoingExercise.class.getName());
-    private MockFitbitDevice mockFitbitDevice;
     private static final int REQUEST_ENABLE_BT = 1;
+    private int exercisePulse;
     private static final int REQUEST_PERMISSIONS = 2;
     private BluetoothAdapter bluetoothAdapter;
+    private BluetoothGatt bluetoothGatt;
     private ImageView imageViewDoExercise;
-    private TextView textViewSteps, textViewHeartRate, textViewCalories, textViewMinPulse, textViewExerciseName, textViewTimer;
+    private TextView  textViewHeartRate, textViewMinPulse, textViewExerciseName, textViewTimer;
     private DatabaseHelper dbHelper;
     private Button buttonStartStop;
     private boolean isExercising = false; // Флаг для отслеживания состояния упражнения
     private CountDownTimer countDownTimer; // Таймер
     private long elapsedTimeInMillis = 0;
+    private long lastToastTime = 0;
 
 
     @Override
@@ -73,7 +85,6 @@ public class DoingExercise extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
 
 
-
         LOGGER.log(Level.INFO, "Устройство браслета создано");
         checkAndRequestPermissions();
         LOGGER.log(Level.INFO, "Разрешения проверены");
@@ -82,10 +93,8 @@ public class DoingExercise extends AppCompatActivity {
 
         // Поиск упражнения в базе данных по имени
         Exercise exercise = findExerciseByName(exerciseName);
-        mockFitbitDevice = new MockFitbitDevice((heartRate) -> {
+        exercisePulse = exercise.getMinPulse();
 
-            updateHeartRate(heartRate, exercise);
-        });
         buttonStartStop.setOnClickListener(v -> {
             if (!isExercising) {
                 startExercise(exercise);
@@ -94,6 +103,7 @@ public class DoingExercise extends AppCompatActivity {
                 Log.d("Остановка упражнения", "упражнение удачно приостановлено");
             }
         });
+
 
         if (exercise != null) {
             textViewExerciseName.setText(exercise.getName());
@@ -114,11 +124,12 @@ public class DoingExercise extends AppCompatActivity {
         }
 
     }
+
     private void startExercise(Exercise exercise) {
         isExercising = true;
         buttonStartStop.setText("Завершить");
         startTimer();
-        mockFitbitDevice.start(); // Начинаем получать данные от устройства
+
     }
 
     private void stopExercise() {
@@ -127,11 +138,11 @@ public class DoingExercise extends AppCompatActivity {
         if (countDownTimer != null) {
             countDownTimer.cancel(); // Останавливаем таймер
         }
-        mockFitbitDevice.stop();
 
         saveExerciseData();
 
     }
+
     private void startTimer() {
         countDownTimer = new CountDownTimer(Long.MAX_VALUE, 1000) { // Используем Long.MAX_VALUE для бесконечного таймера
             @Override
@@ -169,17 +180,13 @@ public class DoingExercise extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // Останавливаем имитацию устройства при закрытии приложения
-        if (mockFitbitDevice != null) {
-            mockFitbitDevice.stop();
-        }
     }
 
     private void checkAndRequestPermissions() {
         String[] permissions = {
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.BLUETOOTH_ADMIN,
-                Manifest.permission.ACCESS_FINE_LOCATION // Добавьте это разрешение
+                Manifest.permission.ACCESS_FINE_LOCATION // Обязательно для Android 10+
         };
 
         List<String> permissionsToRequest = new ArrayList<>();
@@ -195,6 +202,7 @@ public class DoingExercise extends AppCompatActivity {
             initBluetooth();
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -256,34 +264,116 @@ public class DoingExercise extends AppCompatActivity {
     }
 
     private void searchForDevices() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-            mockFitbitDevice.start();
-            /*try {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            try {
                 Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
                 for (BluetoothDevice device : pairedDevices) {
-                    if (device.getName() != null && device.getName().equals("Fitbit")) {
-                        Toast.makeText(this, "Найден Fitbit: " + device.getName(), Toast.LENGTH_SHORT).show();
-                        mockFitbitDevice.start();
+                    if (device.getName() != null && device.getName().equals("Galaxy Fit2 (3F1D)")) {
+                        Toast.makeText(this, "Найден Galaxy Fit2: " + device.getName(), Toast.LENGTH_SHORT).show();
+                        connectToDevice(device); // Подключаемся к устройству
+                        break;
                     }
                 }
             } catch (SecurityException e) {
                 Toast.makeText(this, "Ошибка доступа к Bluetooth", Toast.LENGTH_LONG).show();
             }
-            Раскомментрировать при реальном подключении к браслету*/
         } else {
-            Toast.makeText(this, "Отсутствует разрешение на доступ к Bluetooth", Toast.LENGTH_LONG).show();
+            // Если разрешений нет — запрашиваем
             checkAndRequestPermissions();
         }
     }
 
-    private void updateHeartRate(int heartRate, Exercise exercise) {
-        runOnUiThread(() -> {
-            textViewHeartRate.setText("Пульс: " + heartRate + " уд/мин");
-            if (heartRate < exercise.getMinPulse()) {
-                Toast.makeText(DoingExercise.this, "Пульс ниже минимального! Вы не делаете упражнение.", Toast.LENGTH_SHORT).show();
+    private void connectToDevice(BluetoothDevice device) {
+        // Для API 29 проверяем только BLUETOOTH (BLUETOOTH_CONNECT появился в API 31)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+            checkAndRequestPermissions();
+            return;
+        }
+
+        // Подключаемся к устройству через BLE (GATT)
+        bluetoothGatt = device.connectGatt(this, false, new BluetoothGattCallback() {
+            @Override
+            public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                super.onConnectionStateChange(gatt, status, newState);
+
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    runOnUiThread(() -> Toast.makeText(DoingExercise.this, "Подключено к Galaxy Fit2", Toast.LENGTH_SHORT).show());
+
+                    // На API 29 не требуется явная проверка BLUETOOTH_CONNECT
+                    if (ActivityCompat.checkSelfPermission(DoingExercise.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
+                    gatt.discoverServices();
+                } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
+                    runOnUiThread(() -> Toast.makeText(DoingExercise.this, "Отключено от Galaxy Fit2", Toast.LENGTH_SHORT).show());
+                }
+            }
+
+            @Override
+            public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    BluetoothGattService heartRateService = gatt.getService(UUID.fromString("0000180d-0000-1000-8000-00805f9b34fb"));
+                    if (heartRateService != null) {
+                        BluetoothGattCharacteristic heartRateChar = heartRateService.getCharacteristic(
+                                UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb")
+                        );
+                        if (heartRateChar != null) {
+                            if (ActivityCompat.checkSelfPermission(DoingExercise.this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
+                                // TODO: Consider calling
+                                //    ActivityCompat#requestPermissions
+                                // here to request the missing permissions, and then overriding
+                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                //                                          int[] grantResults)
+                                // to handle the case where the user grants the permission. See the documentation
+                                // for ActivityCompat#requestPermissions for more details.
+                                return;
+                            }
+                            gatt.setCharacteristicNotification(heartRateChar, true);
+                            BluetoothGattDescriptor descriptor = heartRateChar.getDescriptor(
+                                    UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+                            );
+                            descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
+                            gatt.writeDescriptor(descriptor);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                if (characteristic.getUuid().equals(UUID.fromString("00002a37-0000-1000-8000-00805f9b34fb"))) {
+                    if (isExercising) {
+                        byte[] data = characteristic.getValue();
+                        if (data != null && data.length > 1) {
+                            int heartRate = data[1] & 0xFF; // Беззнаковый байт
+
+                            runOnUiThread(() -> {
+                                textViewHeartRate.setText("Пульс: " + heartRate + " уд/мин");
+
+                                if (heartRate < exercisePulse && System.currentTimeMillis() - lastToastTime > 3000) {
+                                    lastToastTime = System.currentTimeMillis();
+                                    Toast.makeText(DoingExercise.this,
+                                            "Пульс ниже минимального (" + exercisePulse + ")!",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                            Log.d("HeartRate", "Получен пульс: " + heartRate);
+                        }
+                    }
+                }
             }
         });
-    };
+    }
+
 
     private void saveExerciseData() {
 
@@ -316,6 +406,7 @@ public class DoingExercise extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> Log.d("Firebase", "Данные сохранены"))
                 .addOnFailureListener(e -> Log.e("Firebase", "Ошибка сохранения"));
 
+        Toast.makeText(DoingExercise.this, "Данные сохранены в истории упражнений", Toast.LENGTH_SHORT).show();
         FirebaseDatabase.getInstance().getReference(".info/connected")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
